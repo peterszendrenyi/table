@@ -39,8 +39,9 @@
             // The original URL that we want to fetch
             const originalCsvUrl = 'https://coreapi.ordit.co.uk/public/custom-export?token=edaad3c3cafbe57fc8c29036f23765d93ec5cb654306b3a3ba99ff7bb7722d0ac9f4ef7d75ccd08e805540acc0b030dce39718d67032e5d5b111431483e7417b__;!!PePb2utDNNs!tgy0HqLJXw6pcfSitx0O5cfty7nF_Mn0e6iEfA52nMcfhbLHwssxyaz10Cn29e2KVTzARBjY1BcJ5I_jZtDdSa5LuEkuPrkvbks$';
             
-            // We prepend a CORS proxy to the URL to bypass the browser's security restrictions
-            const proxiedCsvUrl = `https://thingproxy.freeboard.io/fetch/${originalCsvUrl}`;
+            // ** NEW, WORKING PROXY **
+            // We prepend a different CORS proxy to the URL.
+            const proxiedCsvUrl = `https://corsproxy.io/?${originalCsvUrl}`;
 
             // Function to fetch and display the CSV data
             function displayTable() {
