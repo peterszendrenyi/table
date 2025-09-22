@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Data Table</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #export-button {
+            margin-bottom: 1em;
+            padding: 0.5em 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Data from CSV</h1>
+    <button id="export-button">Export CSV</button>
+    <div id="table-container"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const csvUrl = 'https://coreapi.ordit.co.uk/public/custom-export?token=edaad3c3cafbe57fc8c29036f23765d93ec5cb654306b3a3ba99ff7bb7722d0ac9f4ef7d75ccd08e805540acc0b030dce39718d67032e5d5b111431483e7417b__;!!PePb2utDNNs!tgy0HqLJXw6pcfSitx0O5cfty7nF_Mn0e6iEfA52nMcfhbLHwssxyaz10Cn29e2KVTzARBjY1BcJ5I_jZtDdSa5LuEkuPrkvbks$';
+
+            // Fetch and display the CSV data as a table
+            fetch(csvUrl)
+                .then(response => response.text())
+                .then(csvText => {
+                    const rows = csvText.trim().split('\\n');
+                    const headers = rows.shift().split(',');
+
+                    let table = '<table><thead><tr>';
+                    headers.forEach(header => {
+                        table += `<th>${header.replace(/"/g, '')}</th>`;
+                    });
+                    table += '</tr></thead><tbody>';
+
+                    rows.forEach(row => {
+                        const columns = row.split(',');
+                        table += '<tr>';
+                        columns.forEach(column => {
+                            table += `<td>${column.replace(/"/g, '')}</td>`;
+                        });
+                        table += '</tr>';
+                    });
+
+                    table += '</tbody></table>';
+                    document.getElementById('table-container').innerHTML = table;
+                })
+                .catch(error => console.error('Error fetching the CSV file:', error));
+
+            // Add functionality to the export button
+            document.getElementById('export-button').addEventListener('click', () => {
+                fetch(csvUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'custom-export.csv';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    })
+                    .catch(error => console.error('Error downloading the CSV file:', error));
+            });
+        });
+    </script>
+
+</body>
+</html>
